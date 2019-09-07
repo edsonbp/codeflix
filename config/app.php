@@ -10,10 +10,9 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
-    |
     */
 
-    'name' => env('APP_NAME', 'CodeFlix'),
+    'name' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -167,18 +166,24 @@ return [
         /*
          * Package Service Providers...
          */
-        \Bootstrapper\BootstrapperL5ServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
+        Bootstrapper\BootstrapperL5ServiceProvider::class,
         Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Jrean\UserVerification\UserVerificationServiceProvider::class,
+        Folklore\Image\ImageServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Dingo\Api\Provider\LaravelServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-        App\Providers\RepositoryServiceProvider::class,
+        CodeFlix\Providers\AppServiceProvider::class,
+        CodeFlix\Providers\AuthServiceProvider::class,
+        // CodeFlix\Providers\BroadcastServiceProvider::class,
+        CodeFlix\Providers\EventServiceProvider::class,
+        CodeFlix\Providers\RouteServiceProvider::class,
+        CodeFlix\Providers\RepositoryServiceProvider::class,
 
     ],
 
@@ -230,12 +235,15 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Table' => Bootstrapper\Facades\Table::class,
         'Icon' => Bootstrapper\Facades\Icon::class,
-        'Alert' => Bootstrapper\Facades\Alert::class,
-        'Button' => Bootstrapper\Facades\Button::class,
-        'Navbar' => Bootstrapper\Facades\Navbar::class,
-        'Navigation' => Bootstrapper\Facades\Navigation::class,
+        'Alert' => \Bootstrapper\Facades\Alert::class,
+        'Button' => \Bootstrapper\Facades\Button::class,
+        'Navbar' => \Bootstrapper\Facades\Navbar::class,
+        'Navigation' => \Bootstrapper\Facades\Navigation::class,
+        'MediaObject' => \Bootstrapper\Facades\MediaObject::class,
         'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
-        'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class,
+        'UserVerification' => \Jrean\UserVerification\Facades\UserVerification::class,
+        'Image' => \Folklore\Image\Facades\Image::class,
+        'ApiRoute' => \Dingo\Api\Facade\Route::class,
     ],
 
 ];

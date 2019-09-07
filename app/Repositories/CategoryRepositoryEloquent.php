@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Repositories;
+namespace CodeFlix\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CategoryRepository;
-use App\Entities\Category;
-use App\Validators\CategoryValidator;
+use CodeFlix\Models\Category;
 
 /**
- * Class CategoryRepositoryEloquent.
- *
- * @package namespace App\Repositories;
+ * Class CategoryRepositoryEloquent
+ * @package namespace CodeFlix\Repositories;
  */
 class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepository
 {
+
     /**
      * Specify Model class name
      *
@@ -34,5 +32,4 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
 }

@@ -11,11 +11,12 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Entities\User::class, 20)
-                ->states('admin')
-                ->create()->each(function($user){
-                    $user->verified = true;
-                    $user->save();
-                });
+        factory(\CodeFlix\Models\User::class, 20)
+            ->states('admin')
+            ->create()
+            ->each(function($user){
+                $user->verified = true;
+                $user->save();
+            });
     }
 }

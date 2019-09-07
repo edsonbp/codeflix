@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Repositories;
+namespace CodeFlix\Repositories;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Interface UserRepository.
- *
- * @package namespace App\Repositories;
+ * Interface UserRepository
+ * @package namespace CodeFlix\Repositories;
  */
 interface UserRepository extends RepositoryInterface
 {
