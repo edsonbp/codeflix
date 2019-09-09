@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Validation Language Lines
@@ -8,7 +9,7 @@ return [
     |
     | The following language lines contain the default error messages used by
     | the validator class. Some of these rules have multiple versions such
-    | as the size rules. Feel free to tweak each of these messages.
+    | such as the size rules. Feel free to tweak each of these messages.
     |
     */
 
@@ -41,38 +42,14 @@ return [
     'exists'               => 'O valor selecionado para o campo :attribute é inválido.',
     'file'                 => 'O campo :attribute deve conter um arquivo.',
     'filled'               => 'O campo :attribute é obrigatório.',
-    'gt'                   => [
-        'numeric' => 'O campo :attribute deve ser maior que :value.',
-        'file'    => 'O arquivo :attribute deve ser maior que :value kilobytes.',
-        'string'  => 'O campo :attribute deve ser maior que :value caracteres.',
-        'array'   => 'O campo :attribute deve ter mais que :value itens.',
-    ],
-    'gte'                  => [
-        'numeric' => 'O campo :attribute deve ser maior ou igual a :value.',
-        'file'    => 'O arquivo :attribute deve ser maior ou igual a :value kilobytes.',
-        'string'  => 'O campo :attribute deve ser maior ou igual a :value caracteres.',
-        'array'   => 'O campo :attribute deve ter :value itens ou mais.',
-    ],
     'image'                => 'O campo :attribute deve conter uma imagem.',
     'in'                   => 'O campo :attribute não contém um valor válido.',
     'in_array'             => 'O campo :attribute não existe em :other.',
     'integer'              => 'O campo :attribute deve conter um número inteiro.',
     'ip'                   => 'O campo :attribute deve conter um IP válido.',
-    'ipv4'                 => 'O campo :attribute deve conter um IPv4 válido.',
-    'ipv6'                 => 'O campo :attribute deve conter um IPv6 válido.',
+    'ipv4'                 => 'The :attribute must be a valid IPv4 address.',
+    'ipv6'                 => 'The :attribute must be a valid IPv6 address.',
     'json'                 => 'O campo :attribute deve conter uma string JSON válida.',
-    'lt'                   => [
-        'numeric' => 'O campo :attribute deve ser menor que :value.',
-        'file'    => 'O arquivo :attribute ser menor que :value kilobytes.',
-        'string'  => 'O campo :attribute deve ser menor que :value caracteres.',
-        'array'   => 'O campo :attribute deve ter menos que :value itens.',
-    ],
-    'lte'                  => [
-        'numeric' => 'O campo :attribute deve ser menor ou igual a :value.',
-        'file'    => 'O arquivo :attribute ser menor ou igual a :value kilobytes.',
-        'string'  => 'O campo :attribute deve ser menor ou igual a :value caracteres.',
-        'array'   => 'O campo :attribute não deve ter mais que :value itens.',
-    ],
     'max'                  => [
         'numeric' => 'O campo :attribute não pode conter um valor superior a :max.',
         'file'    => 'O campo :attribute não pode conter um arquivo com mais de :max kilobytes.',
@@ -88,7 +65,6 @@ return [
         'array'   => 'O campo :attribute deve conter no mínimo :min itens.',
     ],
     'not_in'               => 'O campo :attribute contém um valor inválido.',
-    'not_regex'            => 'O formato do valor :attribute é inválido.',
     'numeric'              => 'O campo :attribute deve conter um valor numérico.',
     'present'              => 'O campo :attribute deve estar presente.',
     'regex'                => 'O formato do valor informado no campo :attribute é inválido.',
@@ -111,7 +87,6 @@ return [
     'unique'               => 'O valor informado para o campo :attribute já está em uso.',
     'uploaded'             => 'Falha no Upload do arquivo :attribute.',
     'url'                  => 'O formato da URL informada para o campo :attribute é inválido.',
-    'uuid'                 => 'O campo :attribute deve ser um UUID válido.',
 
     /*
     |--------------------------------------------------------------------------
@@ -124,7 +99,7 @@ return [
     |
     */
 
-    'custom' => [
+    'custom'               => [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
@@ -141,7 +116,7 @@ return [
     |
     */
 
-    'attributes' => [
+    'attributes'           => [
         'address'               => 'endereço',
         'age'                   => 'idade',
         'body'                  => 'conteúdo',
@@ -167,12 +142,10 @@ return [
         'sex'                   => 'sexo',
         'state'                 => 'estado',
         'subject'               => 'assunto',
-        'text'                  => 'texto',
         'time'                  => 'hora',
         'title'                 => 'título',
         'username'              => 'usuário',
         'year'                  => 'ano',
-        'email'                 => 'e-mail',
-        'remember'              => 'lembrar-se de mim',
     ],
+
 ];

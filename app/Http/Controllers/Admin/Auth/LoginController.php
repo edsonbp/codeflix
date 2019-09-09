@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Auth;
+namespace CodeFlix\Http\Controllers\Admin\Auth;
 
-use App\Http\Controllers\Controller;
+use CodeFlix\Http\Controllers\Controller;
+use CodeFlix\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-
 
 class LoginController extends Controller
 {
@@ -42,7 +42,8 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         $data = $request->only($this->username(), 'password');
-        $data['role'] = \App\Models\User::ROLE_ADMIN;
+        $data['role'] = User::ROLE_ADMIN;
+
         return $data;
     }
 

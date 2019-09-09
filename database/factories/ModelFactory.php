@@ -1,35 +1,56 @@
 <?php
 
-use Faker\Generator as Faker;
-
 /*
 |--------------------------------------------------------------------------
 | Model Factories
 |--------------------------------------------------------------------------
 |
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
+| Here you may define all of your model factories. Model factories give
+| you a convenient way to create models for testing and seeding your
+| database. Just tell the factory how a default model should look.
 |
 */
 
-$factory->define(App\Entities\User::class, function (Faker $faker) {
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(\CodeFlix\Models\User::class, function (Faker\Generator $faker) {
+    static $password;
+
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
     ];
 });
 
-$factory->state(\App\Entities\User::class, 'admin', function(Faker $faker){
+$factory->state(\CodeFlix\Models\User::class, 'admin', function (Faker\Generator $faker) {
     return [
-        'role' => \App\Entities\User::ROLE_ADMIN,
+        'role' => \CodeFlix\Models\User::ROLE_ADMIN,
     ];
 });
 
-$factory->define(App\Entities\Category::class, function (Faker $faker) {
+$factory->define(\CodeFlix\Models\Category::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
+    ];
+});
+
+$factory->define(\CodeFlix\Models\Serie::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->sentence(3),
+        'description' => $faker->sentence(10),
+        'thumb' => 'thumb.jpg',
+    ];
+});
+
+$factory->define(\CodeFlix\Models\Video::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->sentence(3),
+        'description' => $faker->sentence(10),
+        'duration' => rand(1,30),
+        'file' => 'thumb.jpg',
+        'thumb' => 'thumb.jpg',
+        'published' => rand(0,1),
+        'completed' => 1,
     ];
 });

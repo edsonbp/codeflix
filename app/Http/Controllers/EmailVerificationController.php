@@ -1,29 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace CodeFlix\Http\Controllers;
 
+use CodeFlix\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Jrean\UserVerification\Traits\VerifiesUsers;
-use App\Repositories\UserRepository;
 
 class EmailVerificationController extends Controller
 {
     use VerifiesUsers;
-
+    /**
+     * @var UserRepository
+     */
     private $repository;
 
+
+    /**
+     * EmailVerificationController constructor.
+     */
     public function __construct(UserRepository $repository){
+
         $this->repository = $repository;
     }
 
-    public function redirectAfterVerification(){
+    public function redirectAfterVerification()
+    {
         $this->loginUser();
-        return url('/admin/dashboard');
+
+        return url('/admin/account/edit');
     }
 
-    protected function loginUser(){
+    protected function loginUser()
+    {
         $email = \Request::get('email');
         $user = $this->repository->findByField('email', $email)->first();
         \Auth::login($user);
     }
+
 }
