@@ -3,11 +3,12 @@
 namespace CodeFlix\Models;
 
 use Bootstrapper\Interfaces\TableInterface;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
-class Category extends Model implements TableInterface
+class Category extends Model implements Transformable, TableInterface
 {
     use TransformableTrait;
     use SoftDeletes;
@@ -33,7 +34,7 @@ class Category extends Model implements TableInterface
      */
     public function getValueForHeader($header)
     {
-        switch ($header){
+        switch ($header) {
             case '#':
                 return $this->id;
             case 'Nome':

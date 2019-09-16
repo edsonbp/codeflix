@@ -2,12 +2,13 @@
 
 namespace CodeFlix\Repositories;
 
-use CodeFlix\Media\ThumbUpload;
+use CodeFlix\Media\FileUploads;
+use CodeFlix\Media\ThumbUploads;
 use CodeFlix\Media\Uploads;
-use CodeFlix\Media\VideoUpload;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 use CodeFlix\Models\Video;
+use CodeFlix\Repositories\Interfaces\VideoRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class VideoRepositoryEloquent
@@ -15,15 +16,14 @@ use CodeFlix\Models\Video;
  */
 class VideoRepositoryEloquent extends BaseRepository implements VideoRepository
 {
-    use ThumbUpload, VideoUpload, Uploads;
+    use ThumbUploads, FileUploads, Uploads;
 
     public function update(array $attributes, $id)
     {
         $model = parent::update($attributes, $id);
-        if(isset($attributes['categories'])){
+        if (isset($attributes['categories'])) {
             $model->categories()->sync($attributes['categories']);
         }
-
         return $model;
     }
 
@@ -37,7 +37,6 @@ class VideoRepositoryEloquent extends BaseRepository implements VideoRepository
         return Video::class;
     }
 
-    
 
     /**
      * Boot up the repository, pushing criteria

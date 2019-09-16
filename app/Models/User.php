@@ -7,6 +7,7 @@ use CodeFlix\Notifications\DefaultResetPasswordNotification;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Prettus\Repository\Contracts\Transformable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements TableInterface, JWTSubject
@@ -23,7 +24,7 @@ class User extends Authenticatable implements TableInterface, JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role'
+        'name', 'email', 'password', 'role', 'cpf'
     ];
 
     /**
@@ -35,11 +36,34 @@ class User extends Authenticatable implements TableInterface, JWTSubject
         'password', 'remember_token',
     ];
 
-    public static function generatePassword($password = null)
+    public function subscriptions()
     {
-        return (!$password) ? bcrypt(str_random(8)) : bcrypt($password);
+        return $this->hasManyThrough(Subscription::class,Order::class);
     }
 
+    public function hasSubscriptionValid()
+    {
+        $valid = false;
+        $subscriptions = $this->subscriptions;
+        foreach ($subscriptions as $subscription){
+            if(!$subscription->isExpired()){
+                $valid = true;
+                break;
+            }
+        }
+        return $valid;
+    }
+
+    public static function generatePassword($password = null){
+        return !$password ? bcrypt(str_random(8)) : bcrypt($password);
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string $token
+     * @return void
+     */
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new DefaultResetPasswordNotification($token));
@@ -64,32 +88,21 @@ class User extends Authenticatable implements TableInterface, JWTSubject
      */
     public function getValueForHeader($header)
     {
-        switch ($header){
+        switch ($header) {
             case '#':
                 return $this->id;
             case 'Nome':
                 return $this->name;
             case 'Email':
                 return $this->email;
-
         }
     }
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
     public function getJWTIdentifier()
     {
         return $this->id;
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
     public function getJWTCustomClaims()
     {
         return [
@@ -97,6 +110,7 @@ class User extends Authenticatable implements TableInterface, JWTSubject
                 'id' => $this->id,
                 'name' => $this->name,
                 'email' => $this->email,
+                'subscription_valid' => $this->hasSubscriptionValid(),
             ]
         ];
     }

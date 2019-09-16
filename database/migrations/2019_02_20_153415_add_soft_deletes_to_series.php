@@ -14,7 +14,7 @@ class AddSoftDeletesToSeries extends Migration
     public function up()
     {
         Schema::table('series', function (Blueprint $table) {
-             $table->softDeletes();
+            $table->softDeletes();
         });
     }
 

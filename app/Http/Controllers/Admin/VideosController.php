@@ -3,25 +3,33 @@
 namespace CodeFlix\Http\Controllers\Admin;
 
 use CodeFlix\Forms\VideoForm;
-use CodeFlix\Models\Video;
-use CodeFlix\Repositories\VideoRepository;
-use Illuminate\Http\Request;
 use CodeFlix\Http\Controllers\Controller;
+use CodeFlix\Http\Controllers\Response;
+use CodeFlix\Models\Video;
+use Illuminate\Http\Request;
+
+use CodeFlix\Http\Requests;
+use Kris\LaravelFormBuilder\Facades\FormBuilder;
+use Prettus\Validator\Contracts\ValidatorInterface;
+use Prettus\Validator\Exceptions\ValidatorException;
+use CodeFlix\Http\Requests\VideoCreateRequest;
+use CodeFlix\Http\Requests\VideoUpdateRequest;
+use CodeFlix\Repositories\Interfaces\VideoRepository;
+
 
 class VideosController extends Controller
 {
+
     /**
      * @var VideoRepository
      */
-    private $repository;
+    protected $repository;
 
-    /**
-     * SeriesController constructor.
-     */
     public function __construct(VideoRepository $repository)
     {
         $this->repository = $repository;
     }
+
 
     /**
      * Display a listing of the resource.
@@ -31,7 +39,6 @@ class VideosController extends Controller
     public function index()
     {
         $videos = $this->repository->paginate();
-
         return view('admin.videos.index', compact('videos'));
     }
 
@@ -42,7 +49,7 @@ class VideosController extends Controller
      */
     public function create()
     {
-        $form = \FormBuilder::create(VideoForm::class, [
+        $form = FormBuilder::create(VideoForm::class, [
             'url' => route('admin.videos.store'),
             'method' => 'POST'
         ]);
@@ -50,53 +57,45 @@ class VideosController extends Controller
         return view('admin.videos.create', compact('form'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store()
     {
-        /** @var Form $form */
-        $form = \FormBuilder::create(VideoForm::class);
+        $form = FormBuilder::create(VideoForm::class);
 
-        if(!$form->isValid()){
-            return redirect()
-                ->back()
-                ->withErrors($form->getErrors())
-                ->withInput();
+        if (!$form->isValid()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
         }
 
         $data = $form->getFieldValues();
-
-        $this->repository->create($data);
-
-        $request->session()->flash('message', 'Video criada com sucesso');
-        return redirect()->route('admin.videos.index');
+        $video = $this->repository->create($data);
+        session()->flash('message', 'Video cadastrado com sucesso.');
+        return redirect()->route('admin.videos.relations.create',['id'=>$video->id]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \CodeFlix\Models\Video  $video
+     * @param Video $video
      * @return \Illuminate\Http\Response
+     * @internal param Video $video
+     * @internal param User $user
      */
     public function show(Video $video)
     {
-        return view('admin.videos.show', ['video' => $video]);
+        return view('admin.videos.show', compact('video'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \CodeFlix\Models\Video  $video
+     * @param Video $video
      * @return \Illuminate\Http\Response
+     * @internal param Video $video
+     * @internal param User $user
      */
     public function edit(Video $video)
     {
-        $form = \FormBuilder::create(VideoForm::class, [
-            'url' => route('admin.videos.update', ['videos' => $video->id]),
+        $form = FormBuilder::create(VideoForm::class, [
+            'url' => route('admin.videos.update', ['video' => $video->id]),
             'method' => 'PUT',
             'model' => $video
         ]);
@@ -107,39 +106,36 @@ class VideosController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \CodeFlix\Models\Video  $video
+     * @param $id
      * @return \Illuminate\Http\Response
+     * @internal param Request $request
+     * @internal param User $user
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        /** @var Form $form */
-        $form = \FormBuilder::create(VideoForm::class);
+        $form = FormBuilder::create(VideoForm::class);
 
-        if(!$form->isValid()){
-            return redirect()
-                ->back()
-                ->withErrors($form->getErrors())
-                ->withInput();
+        if (!$form->isValid()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
         }
 
         $data = $form->getFieldValues();
         $this->repository->update($data, $id);
-
-        $request->session()->flash('message', 'Video atualizado com sucesso');
+        session()->flash('message', 'Video alterado com sucesso.');
         return redirect()->back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \CodeFlix\Models\Video  $video
+     * @param $id
      * @return \Illuminate\Http\Response
+     * @internal param User $user
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
         $this->repository->delete($id);
-        $request->session()->flash('message', 'Video excluído com sucesso');
+        session()->flash('message', 'Video excluído com sucesso.');
         return redirect()->route('admin.videos.index');
     }
 
@@ -148,12 +144,13 @@ class VideosController extends Controller
         return response()->download($video->file_path);
     }
 
-    public function thumbAsset(Video $video){
+    public function thumbAsset(Video $video)
+    {
         return response()->download($video->thumb_path);
     }
 
-    public function thumbSmallAsset(Video $video){
+    public function thumbSmallAsset(Video $video)
+    {
         return response()->download($video->thumb_small_path);
     }
-
 }

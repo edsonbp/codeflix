@@ -1,9 +1,9 @@
-Click here to verify your account:
 <h3>{{config('app.name')}}</h3>
-<p>Sua conta foi criada!!!</p>
+<p>Seu cadastro na nossa plataforma foi realizado com sucesso!</p>
 <p>
-    Clique <a href="{{ route('email-verification.check', $user->verification_token) . '?email=' . urlencode($user->email) }}"> aqui </a> para verificar sua conta
+    Para verificar a sua conta clique
+    <a href="{{ $link = route('email-verification.check', $user->verification_token) . '?email=' . urlencode($user->email) }}">
+        aqui
+    </a>
 </p>
-<p>
-    Não responder este email, ele é gerado automaticamente
-</p>
+<p>Obs: Não responda este email, ele é gerado automaticamente.</p>

@@ -3,25 +3,25 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <h3>Ver Usuário</h3>
-                <?php $iconEdit = Icon::create('pencil');?>
-                {!! Button::primary($iconEdit)->asLinkTo(route('admin.users.edit', ['user' => $user->id])) !!}
-                <?php $iconDestroy = Icon::create('remove');?>
-                {!!
-                    Button::danger($iconDestroy)
-                    ->asLinkTo(route('admin.users.destroy', ['user' => $user->id]))
-                    ->addAttributes(['onclick' => "event.preventDefault();document.getElementById(\"form-delete\").submit();"])
-                !!}
-                <?php
-                    $formDelete = FormBuilder::plain([
-                        'id' => 'form-delete',
-                        'route' => ['admin.users.destroy', 'user' => $user->id],
-                        'method' => 'DELETE',
-                        'style' => 'display:none'
-                        ]);
-                    ?>
+            <h3>Visualizar usuário</h3>
+            <?php
+            $iconEdit = Icon::create('pencil');
+            $iconRemove = Icon::create('trash');
+            ?>
+            {!! Button::primary($iconEdit)->asLinkTo(route('admin.users.edit',['user'=>$user->id])) !!}
+            {!!
+                Button::danger($iconRemove)
+                ->asLinkTo(route('admin.users.destroy',['user'=>$user->id]))
+                ->addAttributes(['onclick'=>"event.preventDefault();document.getElementById(\"form-delete\").submit();"])
+            !!}
+            <?php $formDelete = FormBuilder::plain([
+                'id' => 'form-delete',
+                'method' => 'DELETE',
+                'style' => 'display:none',
+                'route'=>['admin.users.destroy','user'=>$user->id]
+            ]);?>
             {!! form($formDelete) !!}
-            <br /><br />
+            <br/><br/>
 
             <table class="table table-bordered">
                 <tbody>
@@ -34,7 +34,7 @@
                     <td>{{$user->name}}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Email</th>
+                    <th scope="row">E-mail</th>
                     <td>{{$user->email}}</td>
                 </tr>
                 </tbody>

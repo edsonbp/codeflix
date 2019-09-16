@@ -4,6 +4,7 @@ namespace CodeFlix\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
+use CodeFlix\Repositories\Interfaces\CategoryRepository;
 use CodeFlix\Models\Category;
 
 /**
@@ -12,7 +13,6 @@ use CodeFlix\Models\Category;
  */
 class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepository
 {
-
     /**
      * Specify Model class name
      *

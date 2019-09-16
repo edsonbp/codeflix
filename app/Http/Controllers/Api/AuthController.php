@@ -8,38 +8,16 @@ use CodeFlix\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
-    Use AuthenticatesUsers;
+    use AuthenticatesUsers;
 
     public function accessToken(Request $request)
     {
         $this->validateLogin($request);
-
         $credentials = $this->credentials($request);
-
         if($token = \Auth::guard('api')->attempt($credentials)){
-
             return $this->sendLoginResponse($request, $token);
         }
         return $this->sendFailedLoginResponse($request);
-    }
-
-    protected function sendLoginResponse(Request $request, $token)
-    {
-        return response()->json(['token' => $token]);
-    }
-
-    protected function sendFailedLoginResponse(Request $request)
-    {
-        return response()->json([
-            'error' => \Lang::get('auth.failed')
-        ],400);
-    }
-
-    public function logout(Request $request)
-    {
-        \Auth::guard('api')->logout();
-
-        return response()->json([],204);
     }
 
     public function refreshToken(Request $request)
@@ -48,4 +26,23 @@ class AuthController extends Controller
         return $this->sendLoginResponse($request, $token);
     }
 
+    protected function sendLoginResponse(Request $request, $token)
+    {
+        return response()->json([
+            'token' => $token
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        \Auth::guard('api')->logout();
+        return response()->json([],204);
+    }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        return response()->json([
+            'error' => \Lang::get('auth.failed')
+        ],400);
+    }
 }

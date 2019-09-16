@@ -2,10 +2,10 @@
 
 namespace CodeFlix\Repositories;
 
-use Jrean\UserVerification\Facades\UserVerification;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 use CodeFlix\Models\User;
+use CodeFlix\Repositories\Interfaces\UserRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class UserRepositoryEloquent
@@ -13,16 +13,12 @@ use CodeFlix\Models\User;
  */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
-
     public function create(array $attributes)
     {
-        $attributes['role'] = User::ROLE_ADMIN;
-        $attributes['password'] = User::generatePassword();
-
+        $attributes['password'] = User::generatePassword(isset($attributes['password']) ? $attributes['password'] : null);
         $model = parent::create($attributes);
-        UserVerification::generate($model);
-        UserVerification::send($model, 'Sua Conta foi criada');
-
+        \UserVerification::generate($model);
+        \UserVerification::send($model,"Sua conta foi criada");
         return $model;
     }
 
@@ -31,8 +27,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         if(isset($attributes['password'])){
             $attributes['password'] = User::generatePassword($attributes['password']);
         }
-        $model =  parent::update($attributes, $id);
-        return $model;
+        return parent::update($attributes, $id);
     }
 
     /**

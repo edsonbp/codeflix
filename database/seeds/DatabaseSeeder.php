@@ -11,12 +11,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $rootPath = config('filesystems.disks.videos_local.root');
-        \File::deleteDirectory($rootPath, true);
+        $disk = config('filesystems.default');
+        $rootPath = config("filesystems.disks.{$disk}.root");
+        \File::deleteDirectory($rootPath);
 
         $this->call(UsersTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
         $this->call(SeriesTableSeeder::class);
         $this->call(VideosTableSeeder::class);
+        $this->call(PaypalWebProfilesTableSeeder::class);
+        $this->call(PlansTableSeeder::class);
+        $this->call(OrdersTableSeeder::class);
+        $this->call(SubscriptionsTableSeeder::class);
     }
 }

@@ -22,8 +22,10 @@ class CreateVideosTable extends Migration
             $table->string('thumb')->nullable();
             $table->boolean('completed')->default(0);
             $table->boolean('published')->default(0);
+
             $table->integer('serie_id')->unsigned()->nullable();
             $table->foreign('serie_id')->references('id')->on('series');
+
             $table->timestamps();
 		});
 	}

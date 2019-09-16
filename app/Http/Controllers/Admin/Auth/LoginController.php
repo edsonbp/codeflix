@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | Login Controller
+    | LoginPage Controller
     |--------------------------------------------------------------------------
     |
     | This controller handles authenticating users for the application and
@@ -41,9 +41,8 @@ class LoginController extends Controller
 
     protected function credentials(Request $request)
     {
-        $data = $request->only($this->username(), 'password');
+        $data = $request->only($this->username(),'password');
         $data['role'] = User::ROLE_ADMIN;
-
         return $data;
     }
 

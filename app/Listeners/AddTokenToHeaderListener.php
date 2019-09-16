@@ -2,7 +2,7 @@
 
 namespace CodeFlix\Listeners;
 
-use \Dingo\Api\Event\ResponseWasMorphed;
+use Dingo\Api\Event\ResponseWasMorphed;
 use Tymon\JWTAuth\JWT;
 
 class AddTokenToHeaderListener
@@ -32,7 +32,7 @@ class AddTokenToHeaderListener
     {
         $token = $this->jwt->getToken();
         if($token){
-            $event->response->headers->set('Authorization', "Bearer {$token->get()}");
+            $event->response->headers->set('Authorization',"Bearer {$token->get()}");
         }
     }
 }

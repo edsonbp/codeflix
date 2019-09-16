@@ -2,13 +2,12 @@
 
 namespace CodeFlix\Http\Controllers\Admin;
 
-use CodeFlix\Forms\UserAccountForm;
 use CodeFlix\Forms\UserForm;
 use CodeFlix\Models\User;
-use CodeFlix\Repositories\UserRepository;
+use CodeFlix\Repositories\Interfaces\UserRepository;
 use Illuminate\Http\Request;
 use CodeFlix\Http\Controllers\Controller;
-use Kris\LaravelFormBuilder\Form;
+use Kris\LaravelFormBuilder\Facades\FormBuilder;
 
 class UsersController extends Controller
 {
@@ -17,14 +16,10 @@ class UsersController extends Controller
      */
     private $repository;
 
-    /**
-     * UsersController constructor.
-     */
     public function __construct(UserRepository $repository)
     {
         $this->repository = $repository;
     }
-
 
     /**
      * Display a listing of the resource.
@@ -34,8 +29,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = $this->repository->paginate();
-
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index',compact('users'));
     }
 
     /**
@@ -45,12 +39,12 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $form = \FormBuilder::create(UserForm::class, [
+        $form = FormBuilder::create(UserForm::class,[
             'url' => route('admin.users.store'),
             'method' => 'POST'
         ]);
 
-        return view('admin.users.create', compact('form'));
+        return view('admin.users.create',compact('form'));
     }
 
     /**
@@ -61,20 +55,16 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        /** @var Form $form */
-        $form = \FormBuilder::create(UserForm::class);
+        $form = FormBuilder::create(UserForm::class);
 
         if(!$form->isValid()){
-            return redirect()
-                ->back()
-                ->withErrors($form->getErrors())
-                ->withInput();
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
         }
 
         $data = $form->getFieldValues();
+        $data['role'] = User::ROLE_ADMIN;
         $this->repository->create($data);
-
-        $request->session()->flash('message', 'Usuário criado com sucesso');
+        session()->flash('message','Usuário criado com sucesso.');
         return redirect()->route('admin.users.index');
     }
 
@@ -86,7 +76,7 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        return view('admin.users.show', compact('user'));
+        return view('admin.users.show',compact('user'));
     }
 
     /**
@@ -97,77 +87,50 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        $form = \FormBuilder::create(UserForm::class, [
-            'url' => route('admin.users.update', ['user' => $user->id]),
+        $form = FormBuilder::create(UserForm::class,[
+            'url' => route('admin.users.update',['user'=>$user->id]),
             'method' => 'PUT',
             'model' => $user
         ]);
 
-        return view('admin.users.edit', compact('form'));
+        return view('admin.users.edit',compact('form'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \CodeFlix\Models\User  $user
+     * @param $id
      * @return \Illuminate\Http\Response
+     * @internal param Request $request
+     * @internal param User $user
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        /** @var Form $form */
-        $form = \FormBuilder::create(UserForm::class, [
-            'data' => ['id' => $id]
+        $form = FormBuilder::create(UserForm::class,[
+            'data' =>   ['id' => $id]
         ]);
 
         if(!$form->isValid()){
-            return redirect()
-                ->back()
-                ->withErrors($form->getErrors())
-                ->withInput();
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
         }
 
-        $data = array_except($form->getFieldValues(), ['password', 'role']);
+        $data = array_except($form->getFieldValues(),['password','role']);
         $this->repository->update($data, $id);
-
-        $request->session()->flash('message', 'Usuário atualizado com sucesso');
+        session()->flash('message','Usuário alterado com sucesso.');
         return redirect()->route('admin.users.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \CodeFlix\Models\User  $user
+     * @param $id
      * @return \Illuminate\Http\Response
+     * @internal param User $user
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
         $this->repository->delete($id);
-        $request->session()->flash('message', 'Usuário excluído com sucesso');
+        session()->flash('message','Usuário excluído com sucesso.');
         return redirect()->route('admin.users.index');
-    }
-
-    public function showAccount()
-    {
-        $form = \FormBuilder::create(UserAccountForm::class,[
-            'url' => route('admin.account.update'),
-            'method' => 'PUT'
-        ]);
-        return view('admin.users.account',compact('form'));
-    }
-
-    public function updateAccount(Request $request){
-        $form = \FormBuilder::create(UserAccountForm::class);
-        if(!$form->isValid()){
-            return redirect()
-                ->back()
-                ->withErrors($form->getErrors())
-                ->withInput();
-        }
-
-        $data = $form->getFieldValues();
-        $this->repository->update($data, \Auth::user()->id);
-        $request->session()->flash('message','Senha atualizada com sucesso.');
-        return redirect()->route('admin.account.edit');
     }
 }

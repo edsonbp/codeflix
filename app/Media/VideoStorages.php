@@ -1,34 +1,33 @@
 <?php
-namespace CodeFlix\Media;
 
+namespace CodeFlix\Media;
 
 use Illuminate\Filesystem\FilesystemAdapter;
 
 trait VideoStorages
 {
     /**
-     * @return \Illuminate\Filesystem\FilesystemAdapter
+     * @return FilesystemAdapter
      */
-    public function getStorage()
+    public function getStorageDisk()
     {
-        return \Storage::disk($this->getDiskDriver());
+        return \Storage::disk($this->getStorageDiskDriver());
     }
 
-    protected function getDiskDriver()
+    protected function getStorageDiskDriver()
     {
         return config('filesystems.default');
     }
 
-    protected function getAbsolutePath(FilesystemAdapter $storage, $fileRelativePath)
-    {
-        return ($this->isLocalDriver())
-            ? $storage->getDriver()->getAdapter()->applyPathPrefix($fileRelativePath)
+    protected function getAbsolutePath(FilesystemAdapter $storage, $fileRelativePath){
+        return $this->isLocalDriver() ?
+            $storage->getDriver()->getAdapter()->applyPathPrefix($fileRelativePath)
             : $storage->url($fileRelativePath);
     }
 
-    public function isLocalDriver()
+    protected function isLocalDriver()
     {
-        $driver = config("filesystems.disks.{$this->getDiskDriver()}.driver");
+        $driver = config("filesystems.disks.{$this->getStorageDiskDriver()}.driver");
         return $driver == 'local';
     }
 }

@@ -18,6 +18,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \CodeFlix\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \Barryvdh\Cors\HandleCors::class,
     ];
 
     /**
@@ -56,6 +57,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \CodeFlix\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'isVerified' => \Jrean\UserVerification\Middleware\IsVerified::class
+        'isVerified' => \Jrean\UserVerification\Middleware\IsVerified::class,
+        'check-subscriptions' => \CodeFlix\Http\Middleware\CheckSubscriptions::class,
     ];
 }

@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
-import {IonicPage, MenuController, NavController, NavParams, ToastController} from 'ionic-angular';
+import {Component} from "@angular/core";
+import {IonicPage, MenuController, NavController, NavParams, ToastController} from "ionic-angular";
 import {Auth} from "../../providers/auth";
 import {HomePage} from "../home/home";
+import {HomeSubscriberPage} from "../home-subscriber/home-subscriber";
 
 /**
  * Generated class for the LoginPage page.
@@ -35,12 +36,28 @@ export class LoginPage {
 
     login() {
         this.auth.login(this.user)
-            .then(() => {
-                this.afterLogin();
+            .then((user) => {
+                this.afterLogin(user);
             })
-            .catch(()=>{
+            .catch(() => {
                 let toast = this.toastCtrl.create({
                     message: 'Email e/ou senha inválidos.',
+                    duration: 3000,
+                    position: 'top',
+                    cssClass: '.toast-reverse'
+                });
+                toast.present();
+            });
+    }
+
+    loginFacebook() {
+        this.auth.loginFacebook()
+            .then((user) => {
+                this.afterLogin(user);
+            })
+            .catch(() => {
+                let toast = this.toastCtrl.create({
+                    message: 'Erro ao realizar login no facebook',
                     duration: 3000,
                     position: 'top',
                     cssClass: '.toast-login-error'
@@ -49,8 +66,8 @@ export class LoginPage {
             });
     }
 
-    afterLogin() {
+    afterLogin(user) {
         this.menuCtrl.enable(true);
-        this.navCtrl.push(HomePage);
+        this.navCtrl.push(user.subscription_valid ? HomeSubscriberPage : HomePage);
     }
 }

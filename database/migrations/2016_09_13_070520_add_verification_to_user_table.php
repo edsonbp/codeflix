@@ -17,7 +17,7 @@ class AddVerificationToUserTable extends Migration
      */
     public function getUserTableName()
     {
-        $user_model = config('auth.providers.users.model', CodeFlix\Models\User::class);
+        $user_model = config('auth.providers.users.model', \CodeFlix\Models\User::class);
 
         return (new $user_model)->getTable();
     }
@@ -43,7 +43,7 @@ class AddVerificationToUserTable extends Migration
     public function down()
     {
         Schema::table($this->getUserTableName(), function (Blueprint $table) {
-            $table->dropColumn(['verified', 'verification_token']);
+            $table->dropColumn(['verified','verification_token']);
         });
     }
 }
