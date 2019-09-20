@@ -1,9 +1,10 @@
 import {appContainer} from "../app/app.container";
-import {Auth as AuthService} from "../providers/auth";
+import {AuthFactory} from "../providers/auth-factory";
 import {Nav} from "ionic-angular";
 import {LoginPage} from "../pages/login/login";
-export const Auth = () => {
-  return (target: any) => {
+import {AuthGuard} from "../providers/auth-guard";
+function Auth(){
+  return function(target: any){
         target.prototype.ionViewCanEnter = function(){
             let property = Object.keys(this)
                 .find(value => this[value] instanceof Nav);
@@ -13,7 +14,7 @@ export const Auth = () => {
                 });
                 return false;
             }
-            let authService = appContainer().get(AuthService);
+            let authService:AuthGuard = appContainer().get(AuthFactory).get();
             return authService.check().then(isLogged => {
                 if(!isLogged){
                     setTimeout(()=>{
@@ -26,4 +27,5 @@ export const Auth = () => {
             })
         }
   }
-};
+}
+export {Auth}

@@ -4,11 +4,16 @@ import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 
 import {HomePage} from '../pages/home/home';
-import {ListPage} from '../pages/list/list';
 import {LoginPage} from "../pages/login/login";
 import {Auth} from "../providers/auth";
 import {Redirector} from "../providers/redirector";
 import md5 from 'crypto-md5';
+import {HomeSubscriberPage} from "../pages/home-subscriber/home-subscriber";
+import {DB} from "../providers/sqlite/db";
+import {UserModel} from "../providers/sqlite/user.model";
+import {AuthOffline} from "../providers/auth-offline";
+import {DownloadsPage} from "../pages/downloads/downloads";
+import { VideoModel } from '../providers/sqlite/video.model';
 
 @Component({
     templateUrl: 'app.html'
@@ -18,6 +23,7 @@ export class MyApp {
 
     rootPage: any = LoginPage;
 
+    pagesSubscriber: Array<{ title: string, component: any }>;
     pages: Array<{ title: string, component: any }>;
     user: any;
     gravatarUrl = 'https://www.gravatar.com/avatar/nouser.jpg';
@@ -26,13 +32,21 @@ export class MyApp {
                 public statusBar: StatusBar,
                 public splashScreen: SplashScreen,
                 public auth: Auth,
-                public redirector: Redirector) {
+                public authOffline: AuthOffline,
+                public redirector: Redirector,
+                public db: DB,
+                public userModel: UserModel,
+                public videoModel: VideoModel) {
         this.initializeApp();
 
         // used for an example of ngFor and navigation
+        this.pagesSubscriber = [
+            {title: 'Home', component: HomeSubscriberPage},
+            {title: 'Downloads', component: DownloadsPage},
+        ];
+
         this.pages = [
-            {title: 'Home', component: HomePage},
-            {title: 'List', component: ListPage}
+            {title: 'Assine Agora', component: HomePage},
         ];
 
     }
@@ -42,7 +56,17 @@ export class MyApp {
             this.user = user;
             this.gravatar();
         });
+
+        this.authOffline.userSubject().subscribe(user => {
+           this.user = user;
+           this.gravatar();
+        });
+
         this.platform.ready().then(() => {
+            this.db.createSchema();
+            this.videoModel.latest(1, "").subscribe(data => console.log(data));
+
+                // });
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
             this.statusBar.styleDefault();
@@ -52,7 +76,7 @@ export class MyApp {
 
     gravatar(){
         if(this.user){
-            this.gravatarUrl = `https://www.gravatar.com/avatar/${md5(this.user.email,'hex')}`;
+            this.gravatarUrl = `https://www.gravatar.com/avatar/${md5(this.user.email,'hex')}.jpg`;
         }
     }
 

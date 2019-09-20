@@ -27,6 +27,28 @@ import {TextMaskModule} from "angular2-text-mask";
 import {UserResource} from "../providers/resources/user.resource";
 import {PlanResource} from '../providers/resources/plan.resource';
 import { PaymentResource } from '../providers/resources/payment.resource';
+import {VideoResource} from "../providers/resources/video.resource";
+import {VideoPlayPage} from "../pages/video-play/video-play";
+import {StreamingMedia} from "@ionic-native/streaming-media";
+import {MomentModule} from "angular2-moment";
+import 'moment/locale/pt-br';
+import {SQLite} from "@ionic-native/sqlite";
+import {SQLitePorter} from "@ionic-native/sqlite-porter";
+import {DB} from "../providers/sqlite/db";
+import {UserModel} from "../providers/sqlite/user.model";
+import {AuthOffline} from "../providers/auth-offline";
+import {AppConfig} from "../providers/app-config";
+import {AuthFactory} from "../providers/auth-factory";
+import {VideoModel} from "../providers/sqlite/video.model";
+import {VideoController} from "../providers/video/video.controller";
+import {VideoFactory} from "../providers/video/video.factory";
+import {VideoDownload} from "../providers/video/video.download";
+import {DownloadsPage} from "../pages/downloads/downloads";
+import { VideoPaths } from "../providers/video/video-paths";
+import { File } from "@ionic-native/File";
+import { Transfer } from "@ionic-native/transfer";
+import { ProgressBarComponent } from "../components/progress-bar/progress-bar";
+import { SafeUrl } from "../pipes/safe-url";
 declare var ENV: Env;
 @NgModule({
     declarations: [
@@ -39,6 +61,10 @@ declare var ENV: Env;
         AddCpfPage,
         PaymentPage,
         PlansPage,
+        VideoPlayPage,
+        DownloadsPage,
+        ProgressBarComponent,
+        SafeUrl,
     ],
     imports: [
         IonicStorageModule.forRoot({
@@ -47,6 +73,7 @@ declare var ENV: Env;
         HttpModule,
         BrowserModule,
         TextMaskModule,
+        MomentModule,
         IonicModule.forRoot(MyApp, {}, {
             links: [
                 {component: MySettingsPage, name: 'MySettingsPage', segment: 'my-settings'},
@@ -56,6 +83,8 @@ declare var ENV: Env;
                 {component: PlansPage, name: 'PlansPage', segment: 'plans'},
                 {component: AddCpfPage, name: 'AddCpfPage', segment: 'add-cpf'},
                 {component: HomeSubscriberPage, name: 'HomeSubscriberPage', segment: 'subscriber/home'},
+                {component: VideoPlayPage, name: 'VideoPlayPage', segment: 'video/:video/play'},
+                {component: DownloadsPage, name: 'DownloadsPage', segment: 'downloads'},
             ]
         }),
     ],
@@ -70,6 +99,8 @@ declare var ENV: Env;
         AddCpfPage,
         PaymentPage,
         PlansPage,
+        VideoPlayPage,
+        DownloadsPage
     ],
     providers: [
         JwtHelper,
@@ -77,11 +108,27 @@ declare var ENV: Env;
         StatusBar,
         SplashScreen,
         Auth,
+        AuthOffline,
+        AppConfig,
+        AuthFactory,
         Redirector,
         Facebook,
         UserResource,
         PlanResource,
         PaymentResource,
+        VideoResource,
+        StreamingMedia,
+        SQLite,
+        SQLitePorter,
+        DB,
+        UserModel,
+        VideoModel,
+        VideoController,
+        VideoFactory,
+        VideoDownload,
+        VideoPaths,
+        File,
+        Transfer,
         {provide: ErrorHandler, useClass: IonicErrorHandler},
         {
             provide: AuthHttp,

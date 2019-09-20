@@ -5,6 +5,9 @@ import {JwtPayload} from "../models/jwt-payload";
 import {Facebook, FacebookLoginResponse} from "@ionic-native/facebook";
 import {UserResource} from "./resources/user.resource";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {UserModel} from "./sqlite/user.model";
+import {AuthGuard} from "./auth-guard";
+import {AppConfig} from "./app-config";
 
 /*
  Generated class for the Auth provider.
@@ -13,14 +16,16 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
  for more info on providers and Angular DI.
  */
 @Injectable()
-export class Auth {
+export class Auth implements AuthGuard{
 
     private _user = null;
     private _userSubject = new BehaviorSubject(null);
 
     constructor(public jwtClient: JwtClient,
+                public appConfig: AppConfig,
                 public fb: Facebook,
-                public userResource: UserResource) {
+                public userResource: UserResource,
+                public userModel: UserModel) {
     }
 
     userSubject():BehaviorSubject<Object> {
@@ -51,7 +56,11 @@ export class Auth {
     login({email, password}): Promise<Object> {
         return this.jwtClient.accessToken({email, password})
             .then(() => {
-                return this.user();
+                this.appConfig.setOff(false);
+                return this.user()
+                    .then(user => {
+                    return user;
+                });
             });
     }
 
@@ -68,7 +77,18 @@ export class Auth {
             });
     }
 
-    logout() {
+    private saveUser(user){
+        this.userModel.save(user);
+    }
+
+    refresh():Promise<Object>{
+        return this.jwtClient.refreshToken()
+            .then(() => {
+                return this.user();
+            })
+    }
+
+    logout():Promise<any>{
         return this.jwtClient.revokeToken()
             .then(() => {
                 this._user = null;
